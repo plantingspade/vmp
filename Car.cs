@@ -1,24 +1,15 @@
 namespace VehicleMaintenanceProgram
 {
-    /// <summary>
-    /// The different types of fuel that a car can use.
-    /// </summary>
     public enum FuelType
     {
         Petrol, Diesel, Electric, Hybrid
     }
 
-    /// <summary>
-    /// Types of services for the vehicle
-    /// </summary>
     public enum ServiceType
     {
         Basic, Comprehensive
     }
 
-    /// <summary>
-    /// Represents a car with its properties and methods.
-    /// </summary>
     public class Car
     {
         private int _year; // The year the car was manufactured
@@ -27,124 +18,94 @@ namespace VehicleMaintenanceProgram
         private FuelType _fuelType; // The type of fuel the car uses
         private DateTime _wofExpiryDate; // The expiry date of the car's WOF (Warrant of Fitness)
         private DateTime _regoExpiryDate; // The expiry date of the car's registration
-        private DateTime _lastServiceDate; // The date when the car was last serviced
-        public DateTime wofRenewalDate; // The renewal date for the car's WOF
-        public DateTime regoRenewalDate; // The renewal date for the car's rego
+        private DateTime _dateOfLastService; // The date when the car was last serviced
+        private DateTime _wofRenewalDate; // The renewal date for the car's WOF
+        private DateTime _regoRenewalDate; // The renewal date for the car's rego
 
-        public Car(int year, string make, string model, FuelType fuelType, DateTime wofExpiryDate, DateTime regoExpiryDate, DateTime lastServiceDate)
+        public Car(int year, string make, string model, FuelType fuelType, DateTime wofExpiryDate, DateTime regoExpiryDate, DateTime dateOfLastService)
         {
-            // Initialize the car's properties with the provided values
             _year = year;
             _make = make;
             _model = model;
             _fuelType = fuelType;
             _wofExpiryDate = wofExpiryDate;
             _regoExpiryDate = regoExpiryDate;
-            _lastServiceDate = lastServiceDate;
+            _dateOfLastService = dateOfLastService;
         }
 
         public void DisplaySchedule()
         {
-            // Get renewal dates for WOF & rego
-            wofRenewalDate = GetRenewalDate(WofExpiryDate);
-            regoRenewalDate = GetRenewalDate(RegoExpiryDate);
+            _wofRenewalDate = GetRenewalDate(WofExpiryDate);
+            _regoRenewalDate = GetRenewalDate(RegoExpiryDate);
+            Console.WriteLine(GetExpiryMessage("WOF", WofExpiryDate));
+            Console.WriteLine(GetExpiryMessage("rego", RegoExpiryDate));
+            Console.WriteLine("WOF Renewal Date: " + _wofRenewalDate.ToShortDateString());
+            Console.WriteLine("Rego Renewal Date: " + _regoRenewalDate.ToShortDateString());
 
-            // The next service for the car will be a basic one by default
             ServiceType nextServiceType = ServiceType.Basic;
-
-            // The next service date is six months from the last service date
-            DateTime nextServiceDate = GetNextServiceDate(LastServiceDate);
-
-            Console.WriteLine("WOF Renewal Date: " + wofRenewalDate);
-            Console.WriteLine("Rego Renewal Date: " + regoRenewalDate);
+            DateTime dateOfNextService = GetDateOfNextService(DateOfLastService);
 
             // Two years (four services)
             for (int i = 0; i < 4; i++)
             {
-                Console.WriteLine("Next Service: " + nextServiceType + " on " + nextServiceDate);
-
-                // Update for next service
+                Console.WriteLine($"Next Service: {nextServiceType} on {dateOfNextService.ToShortDateString()}");
                 nextServiceType = SetNextServiceType(nextServiceType);
-                nextServiceDate = nextServiceDate.AddMonths(6);
-
+                dateOfNextService = dateOfNextService.AddMonths(6);
             }
         }
         
-        /// <summary>
-        /// Gets the year the car was manufactured.
-        /// </summary>
         public int Year
         {
             get { return _year; }
         }
 
-        /// <summary>
-        /// Gets the manufacturer of the car.
-        /// </summary>
         public string Make
         {
             get { return _make; }
         }
 
-        /// <summary>
-        /// Gets the model of the car.
-        /// </summary>
         public string Model
         {
             get { return _model; }
         }
 
-        /// <summary>
-        /// Gets the type of fuel the car uses.
-        /// </summary>
         public FuelType FuelType
         {
             get { return _fuelType; }
         }
 
-        /// <summary>
-        /// Gets the expiry date of the car's WOF (Warrant of Fitness).
-        /// </summary>
         public DateTime WofExpiryDate
         {
             get { return _wofExpiryDate; }
         }
 
-        /// <summary>
-        /// Gets the expiry date of the car's registration.
-        /// </summary>
         public DateTime RegoExpiryDate
         {
             get { return _regoExpiryDate; }
         }
 
-        /// <summary>
-        /// Gets the date when the car was last serviced.
-        /// </summary>
-        public DateTime LastServiceDate
+        public DateTime DateOfLastService
         {
-            get { return _lastServiceDate; }
+            get { return _dateOfLastService; }
         }
-
+        
         /// <summary>
-        /// Gets the renewal date based off the expiry date passed in
+        /// Returns a renewal date that's 7 days before expiry or today if expiry
+        /// is within 7 days / already passed
         /// </summary>
         /// <param name="expiry">Expiry date</param>
         /// <returns>Renewal date</returns>
-        static DateTime GetRenewalDate(DateTime expiry)
+        public static DateTime GetRenewalDate(DateTime expiry)
         {
             DateTime renewalDate;
 
-            // If expiry date is in the next 7 days
             if ((expiry.Date - DateTime.Today).Days <= 7)
             {
-                // Set the renewal date to today
                 renewalDate = DateTime.Today;
             }
 
             else
             {
-                // Set the renewal date to seven days before expiry
                 renewalDate = expiry.Date.AddDays(-7);
             }
 
@@ -152,35 +113,30 @@ namespace VehicleMaintenanceProgram
         }
 
         /// <summary>
-        /// Calculates and sets the date of the next service based on the date of the last service
+        /// Returns a date six months from the date of the last service
+        /// or today if service is overdue
         /// </summary>
-        /// <param name="lastServiceDate">Date of the last service</param>
-        /// <returns>Date of the next service</returns>
-        static DateTime GetNextServiceDate(DateTime lastServiceDate)
+        /// <param name="dateOfLastService">Date of last service</param>
+        /// <returns>Date of next service</returns>
+        public static DateTime GetDateOfNextService(DateTime dateOfLastService)
         {
-            DateTime nextServiceDate;
+            DateTime dateOfNextService;
 
-            // If last service date is before today
-            if (lastServiceDate.AddMonths(6) <= DateTime.Today)
+            // If date of the next service is today or before
+            if (dateOfLastService.AddMonths(6) <= DateTime.Today)
             {
-                nextServiceDate = DateTime.Today;
+                dateOfNextService = DateTime.Today;
             }
 
             else
             {
-                // Set to six months after last service
-                nextServiceDate = lastServiceDate.AddMonths(6);
+                dateOfNextService = dateOfLastService.AddMonths(6);
             }
 
-            return nextServiceDate;
+            return dateOfNextService;
         }
 
-        /// <summary>
-        /// Sets the next service type to the opposite of what it is now.
-        /// </summary>
-        /// <param name="nextServiceType">Current/previous type of service</param>
-        /// <returns>Next type of service</returns>
-        static ServiceType SetNextServiceType(ServiceType nextServiceType)
+        public static ServiceType SetNextServiceType(ServiceType nextServiceType)
         {
             if (nextServiceType == ServiceType.Basic)
             {
@@ -193,6 +149,30 @@ namespace VehicleMaintenanceProgram
             }
 
             return nextServiceType;
+        }
+
+        /// <summary>
+        /// Returns a message with what is expiring and when 
+        /// </summary>
+        /// <param name="label">What is expiring</param>
+        /// <param name="expiryDate">Date of expiry</param>
+        /// <returns>A message saying what is expiring and when</returns>
+        public static string GetExpiryMessage(string label, DateTime expiryDate)
+        {
+            if (expiryDate.Date < DateTime.Today)
+            {
+                return $"Your {label} expired on {expiryDate.ToShortDateString()}";
+            }
+
+            else if (expiryDate.Date == DateTime.Today)
+            {
+                return $"Your {label} expires today";
+            }
+
+            else
+            {
+                return $"Your {label} expires on {expiryDate.ToShortDateString()}";
+            }
         }
     }
 }
