@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VMP.Gui.Views.YearMakeModelView">
+        
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock
+            HorizontalAlignment="Center"
+            Margin="5"
+            FontSize="20"
+            Foreground="Black">
+            Enter vehicle details
+        </TextBlock>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ComboBox PlaceholderText="Year"
+                      Margin="10, 10, 30, 10"
+                      Padding="10"
+                      Width="125"
+                      Background="#8CFFFFFF"
+                      BorderBrush="#CCFFFFFF"
+                      BorderThickness="1"
+                      CornerRadius="5">
+                <ComboBoxItem>2026</ComboBoxItem>
+                <ComboBoxItem>2025</ComboBoxItem>
+                <ComboBoxItem>2024</ComboBoxItem>
+                <ComboBoxItem>2023</ComboBoxItem>
+                <ComboBoxItem>2022</ComboBoxItem>
+                <ComboBoxItem>2021</ComboBoxItem>
+                <ComboBoxItem>2020</ComboBoxItem>
+                <ComboBoxItem>2019</ComboBoxItem>
+                <ComboBoxItem>2018</ComboBoxItem>
+                <ComboBoxItem>2017</ComboBoxItem>
+                <ComboBoxItem>2016</ComboBoxItem>
+                <!--Should go up to when cars were first invented-->
+            </ComboBox>
+            <ComboBox PlaceholderText="Make"
+                      Margin="10, 10, 30, 10"
+                      Padding="10"
+                      Width="125"
+                      Background="#8CFFFFFF"
+                      BorderBrush="#CCFFFFFF"
+                      BorderThickness="1"
+                      CornerRadius="5">
+                <ComboBoxItem>Kia</ComboBoxItem>
+                <ComboBoxItem>Toyota</ComboBoxItem>
+                <ComboBoxItem>Honda</ComboBoxItem>
+                <ComboBoxItem>Nissan</ComboBoxItem>
+                <ComboBoxItem>Hyundai</ComboBoxItem>
+                <ComboBoxItem>BMW</ComboBoxItem>
+                <!--Should include all major car manufacturers-->
+            </ComboBox>  
+            <ComboBox PlaceholderText="Model"
+                      Margin="10, 10, 10, 10"
+                      Padding="10"
+                      Width="125"
+                      Background="#8CFFFFFF"
+                      BorderBrush="#CCFFFFFF"
+                      BorderThickness="1"
+                      CornerRadius="5">
+                <ComboBoxItem>Optima</ComboBoxItem>
+                <ComboBoxItem>Camry</ComboBoxItem>
+                <ComboBoxItem>Civic</ComboBoxItem>
+                <ComboBoxItem>Altima</ComboBoxItem>
+                <ComboBoxItem>Elantra</ComboBoxItem>
+                <ComboBoxItem>3 Series</ComboBoxItem>
+                <!--Models shown should be based on the selected make-->
+            </ComboBox>        
+        </StackPanel>
+        <Button HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Margin="10"
+                Padding="10"
+                CornerRadius="20"
+                Background="#8CFFFFFF"
+                BorderBrush="#CCFFFFFF"
+                BorderThickness="1"
+                Foreground="Black">
+                Continue
+        </Button>
+    </StackPanel>
+</UserControl>
