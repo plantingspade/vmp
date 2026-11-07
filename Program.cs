@@ -1,4 +1,6 @@
-﻿namespace VehicleMaintenanceProgram
+﻿using System.Text.RegularExpressions;
+
+namespace VehicleMaintenanceProgram
 {
     class Program
     {
@@ -39,7 +41,7 @@
                 Console.WriteLine("Enter the make of the car:");
                 string? input = Console.ReadLine();
 
-                if (!string.IsNullOrWhiteSpace(input))
+                if (!string.IsNullOrWhiteSpace(input) && !Regex.IsMatch(input, @"\d"))
                 {
                     return input;
                 }
@@ -55,7 +57,7 @@
                 Console.WriteLine("Enter the model of the car:");
                 string? input = Console.ReadLine();
 
-                if (!string.IsNullOrWhiteSpace(input))
+                if (!string.IsNullOrWhiteSpace(input) && !Regex.IsMatch(input, @"\d"))
                 {
                     return input;
                 }
@@ -71,7 +73,7 @@
                 Console.WriteLine("Enter the fuel type of the car (Petrol, Diesel, Electric, Hybrid):");
                 string? input = Console.ReadLine();
 
-                if (Enum.TryParse(input, true, out FuelType fuelType))
+                if (Enum.TryParse(input, true, out FuelType fuelType) && !Regex.IsMatch(input, @"\d"))
                 {
                     return fuelType;
                 }
@@ -87,7 +89,7 @@
                 Console.WriteLine("Enter the WOF expiry date of the car (YYYY-MM-DD):");
                 string? input = Console.ReadLine();
 
-                if (DateTime.TryParse(input, out DateTime wofExpiryDate))
+                if (DateTime.TryParse(input, out DateTime wofExpiryDate) && wofExpiryDate.Year > 1885)
                 {
                     return wofExpiryDate;
                 }
@@ -103,7 +105,7 @@
                 Console.WriteLine("Enter the registration expiry date of the car (YYYY-MM-DD):");
                 string? input = Console.ReadLine();
 
-                if (DateTime.TryParse(input, out DateTime regoExpiryDate))
+                if (DateTime.TryParse(input, out DateTime regoExpiryDate) && regoExpiryDate.Year > 1885)
                 {
                     return regoExpiryDate;
                 }
@@ -119,7 +121,7 @@
                 Console.WriteLine("Enter the last service date of the car (YYYY-MM-DD):");
                 string? input = Console.ReadLine();
 
-                if (DateTime.TryParse(input, out DateTime lastServiceDate) && lastServiceDate.Date <= DateTime.Today)
+                if (DateTime.TryParse(input, out DateTime lastServiceDate) && lastServiceDate.Year > 1885 && lastServiceDate.Date <= DateTime.Today)
                 {
                     return lastServiceDate;
                 }

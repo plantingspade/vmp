@@ -21,6 +21,7 @@ namespace VehicleMaintenanceProgram
         private DateTime _dateOfLastService; // The date when the car was last serviced
         private DateTime _wofRenewalDate; // The renewal date for the car's WOF
         private DateTime _regoRenewalDate; // The renewal date for the car's rego
+        private const int SERVICE_INTERVAL = 6; // The interval in months between services
 
         public Car(int year, string make, string model, FuelType fuelType, DateTime wofExpiryDate, DateTime regoExpiryDate, DateTime dateOfLastService)
         {
@@ -35,22 +36,23 @@ namespace VehicleMaintenanceProgram
 
         public void DisplaySchedule()
         {
-            _wofRenewalDate = GetRenewalDate(WofExpiryDate);
-            _regoRenewalDate = GetRenewalDate(RegoExpiryDate);
-            Console.WriteLine(GetExpiryMessage("WOF", WofExpiryDate));
-            Console.WriteLine(GetExpiryMessage("rego", RegoExpiryDate));
+            DateTime today = DateTime.Today;
+            _wofRenewalDate = GetRenewalDate(WofExpiryDate, today);
+            _regoRenewalDate = GetRenewalDate(RegoExpiryDate, today);
+            Console.WriteLine(GetExpiryMessage("WOF", WofExpiryDate, today));
+            Console.WriteLine(GetExpiryMessage("rego", RegoExpiryDate, today));
             Console.WriteLine("WOF Renewal Date: " + _wofRenewalDate.ToShortDateString());
             Console.WriteLine("Rego Renewal Date: " + _regoRenewalDate.ToShortDateString());
 
             ServiceType nextServiceType = ServiceType.Basic;
-            DateTime dateOfNextService = GetDateOfNextService(DateOfLastService);
+            DateTime dateOfNextService = GetDateOfNextService(DateOfLastService, today);
 
             // Two years (four services)
             for (int i = 0; i < 4; i++)
             {
                 Console.WriteLine($"Next Service: {nextServiceType} on {dateOfNextService.ToShortDateString()}");
                 nextServiceType = SetNextServiceType(nextServiceType);
-                dateOfNextService = dateOfNextService.AddMonths(6);
+                dateOfNextService = dateOfNextService.AddMonths(SERVICE_INTERVAL);
             }
         }
         
@@ -95,21 +97,14 @@ namespace VehicleMaintenanceProgram
         /// </summary>
         /// <param name="expiry">Expiry date</param>
         /// <returns>Renewal date</returns>
-        public static DateTime GetRenewalDate(DateTime expiry)
+        public static DateTime GetRenewalDate(DateTime expiry, DateTime today)
         {
-            DateTime renewalDate;
-
-            if ((expiry.Date - DateTime.Today).Days <= 7)
+            if ((expiry.Date - today.Date).Days <= 7)
             {
-                renewalDate = DateTime.Today;
+                return today.Date;
             }
 
-            else
-            {
-                renewalDate = expiry.Date.AddDays(-7);
-            }
-
-            return renewalDate;
+            return expiry.Date.AddDays(-7);
         }
 
         /// <summary>
@@ -118,22 +113,15 @@ namespace VehicleMaintenanceProgram
         /// </summary>
         /// <param name="dateOfLastService">Date of last service</param>
         /// <returns>Date of next service</returns>
-        public static DateTime GetDateOfNextService(DateTime dateOfLastService)
+        public static DateTime GetDateOfNextService(DateTime dateOfLastService, DateTime today)
         {
-            DateTime dateOfNextService;
-
             // If date of the next service is today or before
-            if (dateOfLastService.AddMonths(6) <= DateTime.Today)
+            if (dateOfLastService.AddMonths(SERVICE_INTERVAL) <= today.Date)
             {
-                dateOfNextService = DateTime.Today;
+                return today.Date;
             }
-
-            else
-            {
-                dateOfNextService = dateOfLastService.AddMonths(6);
-            }
-
-            return dateOfNextService;
+                
+            return dateOfLastService.AddMonths(SERVICE_INTERVAL);
         }
 
         public static ServiceType SetNextServiceType(ServiceType nextServiceType)
@@ -157,14 +145,14 @@ namespace VehicleMaintenanceProgram
         /// <param name="label">What is expiring</param>
         /// <param name="expiryDate">Date of expiry</param>
         /// <returns>A message saying what is expiring and when</returns>
-        public static string GetExpiryMessage(string label, DateTime expiryDate)
+        public static string GetExpiryMessage(string label, DateTime expiryDate, DateTime today)
         {
-            if (expiryDate.Date < DateTime.Today)
+            if (expiryDate.Date < today.Date)
             {
                 return $"Your {label} expired on {expiryDate.ToShortDateString()}";
             }
 
-            else if (expiryDate.Date == DateTime.Today)
+            else if (expiryDate.Date == today.Date)
             {
                 return $"Your {label} expires today";
             }
