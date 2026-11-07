@@ -41,7 +41,7 @@ namespace VehicleMaintenanceProgram
                 Console.WriteLine("Enter the make of the car:");
                 string? input = Console.ReadLine();
 
-                if (!string.IsNullOrWhiteSpace(input) && !Regex.IsMatch(input, @"\d"))
+                if (!string.IsNullOrWhiteSpace(input))
                 {
                     return input;
                 }
@@ -57,7 +57,7 @@ namespace VehicleMaintenanceProgram
                 Console.WriteLine("Enter the model of the car:");
                 string? input = Console.ReadLine();
 
-                if (!string.IsNullOrWhiteSpace(input) && !Regex.IsMatch(input, @"\d"))
+                if (!string.IsNullOrWhiteSpace(input))
                 {
                     return input;
                 }
@@ -73,7 +73,7 @@ namespace VehicleMaintenanceProgram
                 Console.WriteLine("Enter the fuel type of the car (Petrol, Diesel, Electric, Hybrid):");
                 string? input = Console.ReadLine();
 
-                if (Enum.TryParse(input, true, out FuelType fuelType) && !Regex.IsMatch(input, @"\d"))
+                if (Enum.TryParse(input, true, out FuelType fuelType) && !Regex.IsMatch(input, @"\d") && !input.Contains(','))
                 {
                     return fuelType;
                 }
